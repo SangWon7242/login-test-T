@@ -7,7 +7,7 @@ import {
   TextInput,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { app } from "./firebaseConfig";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
@@ -82,7 +82,7 @@ export default function App() {
           // 초기값을 undefined로 설정
           */}
           <TextInput
-            value={email || undefined}
+            value={email || ""}
             onChangeText={setEmail}
             keyboardType="email-address"
             style={styles.textInput}
@@ -96,7 +96,7 @@ export default function App() {
         >
           <Text style={{ fontSize: 20, fontWeight: "bold" }}>Password:</Text>
           <TextInput
-            value={password || undefined}
+            value={password || ""}
             onChangeText={setPassword}
             style={styles.textInput}
             secureTextEntry
