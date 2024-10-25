@@ -1,6 +1,17 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { app } from "./firebaseConfig";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
+const auth = getAuth(app);
 
 const CutomButton = (props) => {
   return (
@@ -14,9 +25,37 @@ const CutomButton = (props) => {
   );
 };
 
+const siginIn = async ({ email, password }) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    console.log(userCredential);
+    const user = userCredential.user;
+    console.log("로그인 성공:", user);
+    return user; // 로그인 성공 시 사용자 객체 반환
+  } catch (error) {
+    console.error("로그인 실패:", error.message);
+    throw error; // 호출한 곳에서 오류 처리할 수 있게 예외를 던짐
+  }
+};
+
 export default function App() {
-  const hadleEmailLogin = () => {
-    return;
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const hadleEmailLogin = async () => {
+    try {
+      const user = await siginIn({ email, password });
+      console.log("Logged in:", user);
+      setErrorMessage(null); // 오류 메시지 초기화
+      // 로그인 성공 후 필요한 작업 수행
+    } catch (error) {
+      setErrorMessage(error.message); // 오류 메시지 설정
+    }
   };
 
   const hadleGoogleLogin = () => {
@@ -30,6 +69,39 @@ export default function App() {
       </View>
       <View style={styles.titleBox}>
         <Text style={styles.loginTitle}>Login TEST</Text>
+      </View>
+      <View style={styles.loginInputBox}>
+        <View
+          style={{
+            width: "80%",
+          }}
+        >
+          <Text style={{ fontSize: 20, fontWeight: "bold" }}>Email:</Text>
+          {/*
+          // TextInput에 null값을 전달하면 에러가 남
+          // 초기값을 undefined로 설정
+          */}
+          <TextInput
+            value={email || undefined}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            style={styles.textInput}
+          />
+        </View>
+        <View
+          style={{
+            width: "80%",
+            marginTop: 10,
+          }}
+        >
+          <Text style={{ fontSize: 20, fontWeight: "bold" }}>Password:</Text>
+          <TextInput
+            value={password || undefined}
+            onChangeText={setPassword}
+            style={styles.textInput}
+            secureTextEntry
+          />
+        </View>
       </View>
       <View style={styles.loginBtnBox}>
         <CutomButton
@@ -73,9 +145,20 @@ const styles = StyleSheet.create({
     fontSize: 70,
     fontWeight: "bold",
   },
+  loginInputBox: {
+    flex: 0.4,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textInput: {
+    borderWidth: 2,
+    borderRadius: 5,
+    padding: 10,
+  },
   loginBtnBox: {
     flex: 1,
     alignItems: "center",
+    marginTop: 30,
   },
   loginButton: {
     flexDirection: "row",

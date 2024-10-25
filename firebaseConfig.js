@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+
 import {
   FIREBASE_API_KEY,
   FIREBASE_AUTH_DOMAIN,
@@ -18,3 +19,5 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
+export { app };
