@@ -8,10 +8,8 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
-import { app } from "./firebaseConfig";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-
-const auth = getAuth(app);
+import { auth } from "./firebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 const CutomButton = (props) => {
   return (
